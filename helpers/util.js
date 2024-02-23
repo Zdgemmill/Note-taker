@@ -11,10 +11,22 @@ async function readFromFile(filePath) {
 }
 
 //function to write file
-async function writeToFile(filePath, data) {
+async function writeToFile(filePath, newData) {
   try {
-    const jsonData = JSON.stringify(data, null, 2);
-    await fs.writeFile(filePath, jsonData);
+    // Read existing data from the file
+    const existingData = await fs.readFile(filePath, 'utf8');
+    const dataArray = JSON.parse(existingData);
+
+    // Push the new data into the array
+    dataArray.push(newData);
+
+    // Convert the array back to JSON string with proper formatting
+    const updatedData = JSON.stringify(dataArray, null, 2);
+
+    // Write the updated data back to the file
+    await fs.writeFile(filePath, updatedData);
+
+    console.log('Data has been successfully written to the file.');
   } catch (error) {
     throw new Error(`Error writing to file: ${error.message}`);
   }
